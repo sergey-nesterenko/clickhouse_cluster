@@ -1,0 +1,5 @@
+---
+# defaults file for clickhouse/roles/lvm
+    data_dir: /data_ch/clickhouse
+    data_dev: /dev/sdb
+  

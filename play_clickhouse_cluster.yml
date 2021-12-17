@@ -1,0 +1,15 @@
+---
+- name: DEPLOY ZOOKEEPER CLUSTER
+  hosts: zk_test
+  become: true
+
+  roles:
+    - zookeeper
+
+- name: DEPLOY CLICKHOUSE CLUSTER
+  hosts: ch_test
+  become: true
+
+  roles:
+    - lvm
+    - clickhouse

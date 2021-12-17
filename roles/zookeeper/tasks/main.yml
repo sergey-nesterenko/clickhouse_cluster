@@ -1,0 +1,82 @@
+---
+# tasks file for clickhouse/roles/zookeeper
+    - name: JAVA openjdk INSTALL
+      dnf:
+        name: java-1.8.0-openjdk-devel
+        state: present
+        update_cache: yes
+
+    - name: CHECK zookeeper USER EXISTS
+      shell: find_zoouser=$(cat /etc/passwd|grep 'zookeeper'|head -n1); if [ -n "$find_zoouser" ]; then echo "is"; else echo "not"; fi;
+      register: is_zoouser
+
+    - block:
+
+       - name: CREATE zookeeper USER
+         shell: "{{ item }}"
+         with_items:
+           - groupadd zookeeper
+           - useradd -g zookeeper -d /opt/zookeeper -s /sbin/nologin zookeeper
+         ignore_errors: yes
+      when: is_zoouser.stdout == "not"
+
+    - name: MAKE ZK DIRS
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0777
+        owner: zookeeper
+        group: zookeeper
+        recurse: yes
+      with_items:
+        - /opt/zookeeper
+        - /etc/zookeeper
+        - /data/zookeeper
+        - /var/log/zookeeper
+
+    - name: DOWNLOAD ZK
+      get_url:
+        url: https://apache-mirror.rbc.ru/pub/apache/zookeeper/zookeeper-{{ zk_v }}/apache-zookeeper-{{ zk_v }}-bin.tar.gz
+        #url: http://archive.apache.org/dist/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz
+        dest: /opt/zookeeper-{{ zk_v }}-bin.tar.gz
+
+    - name: UNZIP zookeeper tar AND COPY to /opt/zookeeper
+      shell: "{{ item }}"
+      with_items:
+        - cd /opt/ && tar -xzf zookeeper-{{ zk_v }}-bin.tar.gz
+        - cp -rf /opt/apache-zookeeper-{{ zk_v }}-bin/* /opt/zookeeper/
+        #- cp -rf /opt/zookeeper-{{ zk_v }}/* /opt/zookeeper/
+        - rm -f /opt/zookeeper-{{ zk_v }}-bin.tar.gz
+        - rm -rf /opt/apache-zookeeper-{{ zk_v }}-bin
+        #- rm -rf /opt/zookeeper-{{ zk_v }}
+        - rm -rf /etc/zookeeper/*
+
+    - name: COPY myid file
+      template: src=myid.j2 dest=/data/zookeeper/myid mode=0644
+
+    - name: COPY zoo.cfg.j2
+      template: src=zoo.cfg.j2 dest=/opt/zookeeper/conf/zoo.cfg mode=0775
+      register: zookeeper_configured
+
+    - name: MAKE simlinks for configs
+      shell: "{{ item }}"
+      with_items:
+        - ln -s /opt/zookeeper/conf/* /etc/zookeeper/
+      ignore_errors: yes
+
+    - name: COPY zookeeper.service to systemd
+      copy: src=zookeeper.service dest=/usr/lib/systemd/system/zookeeper.service mode=0664
+      register: zookeeper_service
+
+    - name: COPY env_zookeeper.j2
+      template: src=env_zookeeper.j2 dest=/etc/default/zookeeper mode=0644
+      register: zookeeper_env_configured
+
+    - name: START ZOOKEEPER systemd
+      shell: systemctl daemon-reload
+      when: zookeeper_service.changed
+
+    - name: START ZOOKEEPER
+      #shell: /opt/zookeeper/bin/zkServer.sh start
+      service: name=zookeeper state=restarted enabled=yes
+      when: zookeeper_service.changed or zookeeper_configured.changed or zookeeper_env_configured.changed

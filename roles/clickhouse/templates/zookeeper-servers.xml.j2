@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+ -
+ - Ansible managed
+ -
+--> 
+<yandex>
+  <zookeeper>
+  {% for item in groups['zk_test'] %}
+    <node index="{{ loop.index }}">
+      <host>{{ hostvars[item].ansible_host }}</host>
+      <port>2181</port>
+    </node>
+  {% endfor %}
+  </zookeeper>
+</yandex>

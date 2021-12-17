@@ -1,0 +1,36 @@
+
+# TODO this is really ugly
+# How to find out, which jars are needed?
+# seems, that log4j requires the log4j.properties file to be in the classpath
+CLASSPATH="$ZOOCFGDIR:/usr/share/java/*.jar:/opt/zookeeper/lib/*.jar
+
+
+ZOOCFGDIR=/opt/zookeeper/conf
+ZOOCFG="$ZOOCFGDIR/zoo.cfg"
+ZOO_LOG_DIR=/var/log/zookeeper
+USER=zookeeper
+GROUP=zookeeper
+PIDDIR=/var/run/
+PIDFILE=/var/run/zookeeper.pid
+JAVA=/usr/bin/java
+ZOOMAIN="org.apache.zookeeper.server.quorum.QuorumPeerMain"
+ZOO_LOG4J_PROP="INFO,ROLLINGFILE"
+JMXLOCALONLY=false
+JAVA_OPTS="-Xms{{ xms_value }} \
+    -Xmx{{ xmx_value }} \
+    -Xloggc:/var/log/zookeeper/zookeeper-gc.log \
+    -XX:+UseGCLogFileRotation \
+    -XX:NumberOfGCLogFiles=16 \
+    -XX:GCLogFileSize=16M \
+    -verbose:gc \
+    -XX:+PrintGCTimeStamps \
+    -XX:+PrintGCDateStamps \
+    -XX:+PrintGCDetails
+    -XX:+PrintTenuringDistribution \
+    -XX:+PrintGCApplicationStoppedTime \
+    -XX:+PrintGCApplicationConcurrentTime \
+    -XX:+PrintSafepointStatistics \
+    -XX:+UseParNewGC \
+    -XX:+UseConcMarkSweepGC \
+-XX:+CMSParallelRemarkEnabled"
+SERVER_JVMFLAGS="-Xms{{ xms_value }} -Xmx{{ xmx_value }} -XX:+AlwaysPreTouch"

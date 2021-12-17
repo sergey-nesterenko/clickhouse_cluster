@@ -1,0 +1,7 @@
+---
+# defaults file for clickhouse/roles/zookeeper
+    #zk_v: 3.4.14
+    zk_v: 3.6.3
+    xms_value: 2144m
+    xmx_value: 2144m
+    hosts_group: "{{ groups.zk_test }}"

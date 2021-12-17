@@ -1,0 +1,7 @@
+---
+# defaults file for clickhouse/roles/clickhouse
+    #ch_v: 21.6.8.62
+    ch_v: 21.8.11.4
+    data_dir: /data_ch/clickhouse
+    macros_layer: 10
+    hosts_group: "{{ groups.ch_test }}"

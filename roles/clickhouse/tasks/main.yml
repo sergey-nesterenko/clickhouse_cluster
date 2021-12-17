@@ -1,0 +1,96 @@
+---
+# tasks file for clickhouse/roles/clickhouse
+    - name: ADD Clickhouse repository key
+      rpm_key:
+        state: present
+        key: https://repo.clickhouse.tech/CLICKHOUSE-KEY.GPG
+
+    - name: ADD Clickhouse repository
+      yum_repository:
+        name: clickhouse
+        description: CH YUM repo
+        baseurl: https://repo.clickhouse.tech/rpm/stable/x86_64
+
+    - name: CH INSTALL
+      yum:
+        name: ['clickhouse-server-{{ ch_v }}','clickhouse-client-{{ ch_v }}','clickhouse-common-static-{{ ch_v }}']
+        state: present
+        update_cache: yes
+      tags: 
+        - ch_new_version
+      register: ch_installed
+
+    - name: MAKE CH DIRS
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0774
+        owner: clickhouse
+        group: clickhouse
+        recurse: yes
+      with_items:
+        #- /data/clickhouse
+        - '{{ data_dir }}'
+        - /etc/clickhouse-server
+        - /var/log/clickhouse-server
+        - /etc/clickhouse-server/dict.d
+        - /etc/clickhouse-server/conf.d
+        #- /data/clickhouse/tmp
+        #- /data/clickhouse/user_files
+        - '{{ data_dir }}/tmp'
+        - '{{ data_dir }}/user_files'
+        - /mnt/mogura
+ 
+    - name: INSTALL NFS
+      yum:
+        name: ['nfs-utils','nfs4-acl-tools','portmap']
+        state: present
+        update_cache: yes
+      register: nfs_installed
+
+    - name: START RPC
+      service: name=rpcbind state=started enabled=yes
+      when: nfs_installed.changed
+
+    - name: START NFS
+      service: name=nfs-server state=started enabled=yes
+      when: nfs_installed.changed
+
+    - name: MOUNT /mnt/mogura
+      mount:
+        fstype: nfs
+        path: /mnt/mogura
+        src: 10.19.2.10:/data/mogura
+        state: mounted
+        opts: rw,tcp,nosuid,intr,noatime,hard,bg
+      ignore_errors: yes
+
+    - name: COPY config.xml.j2
+      template: src=config.xml.j2 dest=/etc/clickhouse-server/config.xml mode=0664
+      tags: ['always']
+      register: ch_configured
+
+    - name: COPY users.xml.j2
+      template: src=users.xml.j2 dest=/etc/clickhouse-server/users.xml mode=0664
+      tags: ['always']
+      register: ch_configured2
+
+    - name: COPY macros.xml.j2
+      template: src=macros.xml.j2 dest=/etc/clickhouse-server/conf.d/macros.xml mode=0664
+      tags: ['always']
+      register: ch_configured3
+
+    - name: COPY zookeeper-servers.xml.j2
+      template: src=zookeeper-servers.xml.j2 dest=/etc/clickhouse-server/conf.d/zookeeper-servers.xml mode=0664
+      tags: ['always']
+      register: ch_configured4
+
+    - name: COPY clickhouse_remote_servers.xml.j2
+      template: src=clickhouse_remote_servers.xml.j2 dest=/etc/clickhouse-server/conf.d/clickhouse_remote_servers.xml mode=0664
+      tags: ['always']
+      register: ch_configured5
+
+    - name: START CH
+      service: name=clickhouse-server state=restarted enabled=yes
+      tags: ['always']
+      when: ch_installed.changed or ch_configured.changed or ch_configured2.changed or ch_configuration3.changed or ch_configured4.changed or ch_configured5.changed

@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+<!--
+ -
+ - Ansible managed
+ -
+--> 
+<yandex>
+   <profiles>
+    <!-- Profiles of settings. -->
+    <!-- Default profiles. -->
+        <default>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+            <max_partitions_per_insert_block>100</max_partitions_per_insert_block>
+            <allow_experimental_window_functions>1</allow_experimental_window_functions>
+            <background_schedule_pool_size>128</background_schedule_pool_size>
+        </default>
+        <readonly>
+            <readonly>1</readonly>
+        </readonly>
+        <!-- Default profiles end. -->
+    <!-- Custom profiles. -->
+        <default>
+            <max_memory_usage>20000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+        </default>
+        <basic>
+            <max_memory_usage>20000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+            <log_queries>1</log_queries>
+            <allow_experimental_window_functions>1</allow_experimental_window_functions>
+        </basic>
+        <readonly>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <readonly>2</readonly>
+            <log_queries>1</log_queries>
+            <allow_experimental_window_functions>1</allow_experimental_window_functions>
+        </readonly>
+        <!-- Custom profiles end. -->
+    </profiles>
+
+    <!-- Users and ACL. -->
+    <users>
+    <!-- Default users. -->
+            <!-- Default user for login if user not defined -->
+        <default>
+                <password></password>
+                <networks incl="networks" replace="replace">
+                <ip>::1</ip>
+                <ip>127.0.0.1</ip>
+                <ip>10.18.8.0/24</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+            </default>
+            <!-- Example of user with readonly access -->
+        <readonly>
+                <password></password>
+                <networks incl="networks" replace="replace">
+                <ip>::1</ip>
+                <ip>127.0.0.1</ip>
+                </networks>
+        <profile>readonly</profile>
+        <quota>default</quota>
+            </readonly>
+        <!-- Custom users. -->
+            <!-- mogura -->
+        <mogura>
+                <password_sha256_hex>a4a20ed003c23fe9ff23b458d7c65d906ee58671b0564a980bbbf59533f1c8e8</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>10.2.11.0/24</ip>
+                <ip>10.10.119.0/24</ip>
+                </networks>
+        <profile>basic</profile>
+        <quota>default</quota>
+        </mogura>
+
+        <ops>
+                <password_sha256_hex>4baaaf54b67f08acfb158bc15febb336a4a52442f18019bdb4449909152de0ef</password_sha256_hex>
+                <networks>
+                <ip>0.0.0.0/0</ip>
+                </networks>
+                <profile>basic</profile>
+                <quota>default</quota>
+        </ops>
+            <!-- user ruclub -->
+        <ruclub>
+                <password_sha256_hex>bce05e19e956e54dad891bf4f93cd3d6de6818b66c0ca04056b1e9fdf96b5bf1</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+            </ruclub>
+            <!-- user ruclub_ro -->
+        <ruclub_ro>
+                <password_sha256_hex>6953ffba35fa6369a047a9bfa6448947ca25532c3ff03feba9442ef73f6e47b2</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>basic</profile>
+        <quota>default</quota>
+            </ruclub_ro>
+            <!-- redash_ro -->
+        <redash_ro>
+                <password_sha256_hex>f74d1c728251f92f7d22d951e2174e979739f53d23518dad3013f9e0cb66edb9</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                <ip>10.1.108.21</ip>
+                <ip>91.207.58.150</ip>
+                </networks>
+        <profile>readonly</profile>
+        <quota>default</quota>
+            </redash_ro>
+            <!-- redash_ro -->
+        <redash_ro>
+                <password_sha256_hex>f74d1c728251f92f7d22d951e2174e979739f53d23518dad3013f9e0cb66edb9</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                <ip>10.1.108.21</ip>
+                <ip>91.207.58.150</ip>
+                </networks>
+        <profile>readonly</profile>
+        <quota>default</quota>
+            </redash_ro>
+            <!-- tableau -->
+        <tableau>
+                <password_sha256_hex>1F97DAF0B84CB76F86A5EE6C830562E112AF988475EA997F674C9830FBDD98DA</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>readonly</profile>
+        <quota>default</quota>
+            </tableau>
+            <!-- isolyakin -->
+        <isolyakin>
+                <password_sha256_hex>bf9c6758ce623c758263f13ac609d297bd70666f005629ce3edd66ca111aa8b7</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+            </isolyakin>
+            <!-- dfedorov -->
+        <dfedorov>
+                <password_sha256_hex>1bcf67dce5802fdf8d83c51dbcef94254192ab91040ef94c54172cf462679faf</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+            </dfedorov>
+            <!-- mjolnir -->
+        <mjolnir>
+                <password_sha256_hex>885f59932b1eaac50546a412fb34c64079c81815de9fbeb40f15e334b520f9ab</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+                 <allow_databases>
+                    <database>mjolnir</database>
+                </allow_databases>
+            </mjolnir>
+            <!-- akupyrev -->
+        <akupyrev>
+                <password_sha256_hex>30d3d8093d0597da4e519a99edb7421d872bf873525fb5d9f1f9f942ee1bd85f</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+                 <allow_databases>
+                    <database>search</database>
+                </allow_databases>
+            </akupyrev>
+            <!-- rat -->
+        <rat>
+                <password_sha256_hex>2364dde393dbd4735a5ebfdd962a88278aff7d6be22e74f12b3b2b8752d7402a</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+                 <allow_databases>
+                    <database>rat</database>
+                </allow_databases>
+            </rat>
+            <!-- rgumerov -->
+        <rgumerov>
+                <password_sha256_hex>920176d734356f483597703924761e94a7ca7f005877e55feb7d5991f8549a2b</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>readonly</profile>
+        <quota>default</quota>
+            </rgumerov>
+            <!-- voloseo -->
+        <voloseo>
+                <password_sha256_hex>7a282687f367f558aae77c96cd562116ecbd835dcd2cd035114193fc97e8c153</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>default</profile>
+        <quota>default</quota>
+                 <allow_databases>
+                    <database>seo</database>
+                </allow_databases>
+            </voloseo>
+            <!-- analytics -->
+        <analytics>
+                <password_sha256_hex>7a282687f367f558aae77c96cd562116ecbd835dcd2cd035114193fc97e8c153</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                <ip>0.0.0.0/0</ip>
+                </networks>
+        <profile>readonly</profile>
+        <quota>default</quota>
+            </analytics>
+        </users>
+
+    <!-- Quotas. -->
+    <quotas>
+        <!-- Default quotas. -->
+        <default>
+            <duration>3600</duration>
+        <queries>0</queries>
+        <errors>0</errors>
+        <result_rows>0</result_rows>
+        <read_rows>0</read_rows>
+        <execution_time>0</execution_time>
+        </default>
+            </quotas>
+</yandex>

@@ -1,0 +1,41 @@
+---
+# tasks file for clickhouse/roles/lvm
+  - name: Install lvm2
+    package:
+      name: lvm2
+      state: present
+
+  - name: Create LVM group vg
+    lvg:
+      vg: vg
+      pvs: "{{ data_dev }}"
+      state: present
+
+  - name: Create logical volume
+    lvol:
+      vg: vg
+      lv: data
+      size: 100%FREE
+      state: present
+      #force: yes
+    ignore_errors: yes
+
+  - name: Create data dir
+    file:
+      path: "{{ data_dir }}"
+      state: directory
+      mode: 0775
+
+  - name: format datadir
+    filesystem:
+      fstype: xfs
+      dev: /dev/vg/data
+
+  - name: mount lv to datadir
+    mount:
+      path: "{{ data_dir }}"
+      src: /dev/vg/data
+      fstype: xfs
+      state: mounted
+       
+       

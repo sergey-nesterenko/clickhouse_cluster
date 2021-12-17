@@ -1,0 +1,22 @@
+[zk_test]
+zkt1  ansible_host=10.10.136.10 hostname=vml-m9-dev-pg-2 server_number=1
+zkt2  ansible_host=10.18.8.109 hostname=vml-hq-dev-redis-rupass-1 server_number=2
+zkt3  ansible_host=10.18.8.110 hostname=vml-hq-dev-redis-rupass-2 server_number=3
+
+[ch_test]
+cht1  ansible_host=10.18.8.87 hostname=vml-hq-dev-redis-vb-1
+cht2  ansible_host=10.18.8.88 hostname=vml-hq-dev-redis-vb-2
+
+[zk_dev]
+#zkd1 ansible_host=10.18.8.55 hostname=vml-hq-dev-zk-1
+zkd1 ansible_host=10.18.8.167 hostname=zk-ch-201 server_number=4
+zkd2 ansible_host=10.18.8.168 hostname=zk-ch-202 server_number=5
+zkd3 ansible_host=10.18.8.169 hostname=zk-ch-203 server_number=6
+
+[ch_dev]
+chd1 ansible_host=10.18.8.164 hostname=clickhouse-201
+chd2 ansible_host=10.18.8.165 hostname=clickhouse-202
+
+[CH_ZK:children]
+zk_test
+ch_test
